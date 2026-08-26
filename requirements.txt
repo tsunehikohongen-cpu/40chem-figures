@@ -1,0 +1,10 @@
+numpy
+pandas
+Pillow
+matplotlib
+scipy
+networkx
+adjustText
+openpyxl
+gseapy
+pycirclize

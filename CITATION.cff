@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "40chem-figures: reproduction scripts for a 40-chemical transcriptomics figure set"
+authors:
+  - family-names: "Hongen"
+    given-names: "Tsunehiko"
+version: 0.1.0
+date-released: "2026-08-26"
+license: MIT
+repository-code: "https://github.com/<your-username>/40chem-figures"
+# doi: 10.5281/zenodo.XXXXXXX   # add after minting the first Zenodo release
