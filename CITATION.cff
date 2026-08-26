@@ -4,8 +4,8 @@ title: "40chem-figures: reproduction scripts for a 40-chemical transcriptomics f
 authors:
   - family-names: "Hongen"
     given-names: "Tsunehiko"
-version: 0.1.0
+version: 1.0.0
 date-released: "2026-08-26"
 license: MIT
-repository-code: "https://github.com/<your-username>/40chem-figures"
-# doi: 10.5281/zenodo.XXXXXXX   # add after minting the first Zenodo release
+repository-code: "https://github.com/tsunehikohongen-cpu/40chem-figures"
+doi: 10.5281/zenodo.22108794

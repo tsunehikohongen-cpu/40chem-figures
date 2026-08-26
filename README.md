@@ -109,5 +109,5 @@ this license does not cover any dataset distributed separately.
 ## Citing
 
 See `CITATION.cff`. If you use this code, please cite the associated
-Zenodo record (DOI to be added after the first Zenodo release) and/or the
-manuscript.
+Zenodo record: [10.5281/zenodo.22108794](https://doi.org/10.5281/zenodo.22108794)
+and/or the manuscript.
