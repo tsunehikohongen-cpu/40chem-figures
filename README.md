@@ -4,7 +4,8 @@ Code and input data for the main-text figures of the 40-chemical iPSC
 transcriptomics manuscript (mechanism-of-action structure of human iPSC
 responses and developmental-toxicity prediction): PCA and NES-profile
 correlation (Fig. 2), feature-gene selection (Fig. 3), predictions for the
-five Unknown chemicals (Fig. 4) and read-across of the Unknown chemicals
+five Unknown chemicals (Fig. 4), mechanism-of-action (MoA) structure of the
+transcriptional response (Fig. 5) and read-across of the Unknown chemicals
 (Fig. 6).
 
 Companion repository (Supplementary Information code and data):
@@ -19,6 +20,8 @@ Companion repository (Supplementary Information code and data):
 | Fig. 3b, 3d — GO chord diagrams | `scripts/Fig3bd_GOchord.py` | `Wilcoxon_GeneSet182.csv` / `INGOR_GeneSet150.csv`, `GO_Biological_Process_2026.txt` |
 | Fig. 3c — INGOR network of Gene Set 2 | `scripts/Fig3c_network.py` | `INGOR_GeneSet150.csv`, `1000_ECv_edges.tsv` |
 | Fig. 4a-h — predictions for the Unknown chemicals | `scripts/Fig4a-h_prediction_dotplots.py` | the 8 files in `fig4_predictions/` |
+| Fig. 5 — MoA structure (clustering, MoA vs category, per-MoA coherence) | `scripts/Fig5_MoA_similarity.py` | `NES_matrix_GO_BP_2023_40chemicals.csv` |
+| Fig. 5 / Supplementary Table 7 — chemical-level permutation test | `scripts/Fig5_MoA_permutation_test.py` | `NES_matrix_GO_BP_2023_40chemicals.csv` |
 | Fig. 6 — read-across of the Unknown chemicals | `scripts/Fig6_read_across.py` | `NES_matrix_GO_BP_2023_40chemicals.csv` |
 | NES matrix used by Fig. 2b and Fig. 6 | `scripts/compute_ssGSEA_NES_matrix.py` | `40_Chem_DESeq_normalized.csv` |
 
@@ -95,6 +98,25 @@ internet required) -> NES matrix (2,692 terms x 40 chemicals). Genes with
 
 - Run: `python scripts/compute_ssGSEA_NES_matrix.py`
 - Output: `data/NES_matrix_GO_BP_2023_40chemicals.csv`
+
+### `Fig5_MoA_similarity.py` — Figure 5
+Cosine similarity of the ssGSEA NES profiles of the 35 labelled chemicals:
+(a) hierarchically clustered similarity matrix with category and MoA-subgroup
+bars (16 MoA subgroups); (b) same MoA vs same category / different MoA vs
+different category; (c, d) same-MoA vs different-MoA pairs within Category 1 and
+Category 0; (e) per-MoA coherence (Cliff's delta). Permutation P values shown in
+the figure come from `Fig5_MoA_permutation_test.py`.
+
+- Run: `python scripts/Fig5_MoA_similarity.py`
+- Output: `output/Fig5_MoA_similarity.{png,pdf}`
+
+### `Fig5_MoA_permutation_test.py` — chemical-level permutation test (Fig. 5, Supplementary Table 7)
+MoA labels are shuffled among chemicals within each category (10,000
+permutations, fixed seed 42) and the test statistic (Cliff's delta or mean
+difference) recomputed; P_perm is the fraction of permutations with a statistic
+at least as large as the observed one. Results are printed to the console.
+
+- Run: `python scripts/Fig5_MoA_permutation_test.py` (a few minutes)
 
 ### `Fig6_read_across.py` — Figure 6
 Cosine similarity of the ssGSEA NES profile (2,692 GO BP terms) of each of the
