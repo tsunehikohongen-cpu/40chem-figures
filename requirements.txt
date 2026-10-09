@@ -8,3 +8,4 @@ adjustText
 openpyxl
 gseapy
 pycirclize
+scikit-learn
