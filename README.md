@@ -23,6 +23,7 @@ Companion repository (Supplementary Information code and data):
 | Fig. 5 — MoA structure (clustering, MoA vs category, per-MoA coherence) | `scripts/Fig5_MoA_similarity.py` | `NES_matrix_GO_BP_2023_40chemicals.csv` |
 | Fig. 5 / Supplementary Table 7 — chemical-level permutation test | `scripts/Fig5_MoA_permutation_test.py` | `NES_matrix_GO_BP_2023_40chemicals.csv` |
 | Fig. 6 — read-across of the Unknown chemicals | `scripts/Fig6_read_across.py` | `NES_matrix_GO_BP_2023_40chemicals.csv` |
+| Per-feature contributions / modality attribution (Results) | `scripts/run_shap_contribution_export.py` | `results/factor_analysis/*.csv` (see below) |
 | NES matrix used by Fig. 2b and Fig. 6 | `scripts/compute_ssGSEA_NES_matrix.py` | `40_Chem_DESeq_normalized.csv` |
 
 `scripts/fig_style.py` holds the shared matplotlib style and colour palette.
@@ -171,6 +172,31 @@ transcriptomics-only feature set (8 panels total).
   script's module docstring).
 - Run: `python scripts/Fig4a-h_prediction_dotplots.py`
 - Outputs: 8 dot-plot PNG/TIFF pairs under `output/figures_dotplot/`.
+
+### `results/factor_analysis/` — per-feature contribution tables
+Per-feature contribution percentages (`Contribution [%]`, `Contribution_positive [%]`,
+`Contribution_negative [%]`; each file sums to 100%) for the four combinations
+CACTUS (multi-modal) / NonCACTUS (transcriptomics-only) x Gene Set 1 (182 genes) /
+Gene Set 2 (150 genes), for both model families:
+
+- `{CACTUS,NonCACTUS}_ML_GeneSet{182,150}.csv` — ML (LR / SVM / RF ensemble), SHAP-based,
+  produced by `scripts/run_shap_contribution_export.py`.
+- `{CACTUS,NonCACTUS}_NN_GeneSet{182,150}.csv` — neural network, factor analysis of the
+  first-layer activations (produced by a separate NN pipeline that is not included).
+
+The "modality attribution" in the Results (chemical descriptors = 11-19% of the
+discriminative weight in the ML classifiers, 5-6% in the neural network) is the summed
+contribution of the 10 descriptor rows (MW, LogP, TPSA, HBD, HBA, QED, BBB_penetrant,
+BBB_score, Brenk_alerts, PAINS_alerts) in the CACTUS files: ML 11.2% (GeneSet182) and
+19.0% (GeneSet150); NN 5.6% (GeneSet182) and 5.4% (GeneSet150). The NonCACTUS files
+contain no descriptors.
+
+`run_shap_contribution_export.py` cannot be run standalone: it consumes a pre-built
+`setup_all.pkl` (fitted LR / RF / SVM models and scaled feature matrix per combination)
+from the original model-training pipeline (archived in
+[40chem-supplement](https://github.com/tsunehikohongen-cpu/40chem-supplement)`/scripts/ml_pipeline/`).
+It is included to document exactly how the ML contribution percentages were computed
+(see its module docstring).
 
 ## License
 

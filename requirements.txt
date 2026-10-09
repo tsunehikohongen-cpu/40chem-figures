@@ -9,3 +9,4 @@ openpyxl
 gseapy
 pycirclize
 scikit-learn
+shap
