@@ -3,6 +3,4 @@ __pycache__/
 *.pyc
 .DS_Store
 output/
-data/*
-!data/40_Chem_DESeq_normalized.csv
-!data/NES_matrix_GO_BP_2023_40chemicals.csv
+data/Table_Labels_A.xlsx

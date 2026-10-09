@@ -1,0 +1,16 @@
+No,Chemical,Concentration,LR_pred,LR_prob,SVM_pred,SVM_prob,RF_pred,RF_prob,Ensemble_majority_vote
+36,Deltamethrin,0.1,0,0.4456,0,0.5427,1,0.52,0
+36,Deltamethrin,0.3,1,0.6533,1,0.8156,1,0.69,1
+36,Deltamethrin,1,0,0.0743,0,0.1371,0,0.405,0
+37,"2,2',4,4',5-Pentabromodiphenyl ether",0.1,0,0.0701,0,0.2558,0,0.425,0
+37,"2,2',4,4',5-Pentabromodiphenyl ether",0.3,0,0.0283,0,0.0435,0,0.225,0
+37,"2,2',4,4',5-Pentabromodiphenyl ether",1,0,0.3813,1,0.6826,0,0.415,0
+38,Bisphenol A,0.1,0,0.3833,0,0.3953,0,0.45,0
+38,Bisphenol A,0.3,0,0.4474,0,0.6133,1,0.51,0
+38,Bisphenol A,1,1,0.7511,1,0.8263,1,0.52,1
+39,Chlorpyrifos,0.1,1,0.7937,1,0.8593,1,0.57,1
+39,Chlorpyrifos,0.3,1,0.7442,1,0.7741,1,0.55,1
+39,Chlorpyrifos,1,0,0.3704,0,0.5227,0,0.45,0
+40,imidacloprid,0.1,1,0.6161,0,0.6173,0,0.48,0
+40,imidacloprid,0.3,1,0.7756,1,0.8311,1,0.515,1
+40,imidacloprid,1,1,0.9467,1,0.9231,1,0.66,1

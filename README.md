@@ -15,10 +15,10 @@ Companion repository (Supplementary Information code and data):
 | Figure | Script | Main inputs (in `data/`) |
 |---|---|---|
 | Fig. 2a, 2b — PCA; within- vs between-category NES correlation | `scripts/Fig2_PCA_and_NES_correlation.py` | `40_Chem_DESeq_normalized.csv`, `NES_matrix_GO_BP_2023_40chemicals.csv` |
-| Fig. 3a — expression heatmap of Gene Set 1 | `scripts/Fig3a_heatmap.py` | see below |
-| Fig. 3b, 3d — GO chord diagrams | `scripts/Fig3bd_GOchord.py` | see below |
-| Fig. 3c — INGOR network of Gene Set 2 | `scripts/Fig3c_network.py` | see below |
-| Fig. 4a-h — predictions for the Unknown chemicals | `scripts/Fig4a-h_prediction_dotplots.py` | see below |
+| Fig. 3a — expression heatmap of Gene Set 1 | `scripts/Fig3a_heatmap.py` | `Top1000_data.csv`, `Wilcoxon_GeneSet182.csv`, `1000_ECv_wilcoxon_nodes_LabelA_complete.tsv` |
+| Fig. 3b, 3d — GO chord diagrams | `scripts/Fig3bd_GOchord.py` | `Wilcoxon_GeneSet182.csv` / `INGOR_GeneSet150.csv`, `GO_Biological_Process_2026.txt` |
+| Fig. 3c — INGOR network of Gene Set 2 | `scripts/Fig3c_network.py` | `INGOR_GeneSet150.csv`, `1000_ECv_edges.tsv` |
+| Fig. 4a-h — predictions for the Unknown chemicals | `scripts/Fig4a-h_prediction_dotplots.py` | the 8 files in `fig4_predictions/` |
 | Fig. 6 — read-across of the Unknown chemicals | `scripts/Fig6_read_across.py` | `NES_matrix_GO_BP_2023_40chemicals.csv` |
 | NES matrix used by Fig. 2b and Fig. 6 | `scripts/compute_ssGSEA_NES_matrix.py` | `40_Chem_DESeq_normalized.csv` |
 
@@ -52,9 +52,28 @@ Run each script from the repository root; outputs are written to `output/`
   order Category 1 (20) | Category 0 (15) | Unknown (5)). Derived from the matrix
   above by `scripts/compute_ssGSEA_NES_matrix.py`; re-running that script
   reproduces the shipped file.
-- The gene lists, INGOR network tables and model-prediction files used by Fig. 3
-  and Fig. 4 are not included; their expected names and formats are described under
-  each script below.
+- **Fig. 3 inputs**
+  - `Top1000_data.csv` — expression of the top-1,000 variable genes (iDEP; column
+    `symbol` plus one column per sample, e.g. `Acitretin_1`).
+  - `Wilcoxon_GeneSet182.csv` — Gene Set 1, the 182 genes selected by INGOR edge
+    score >= 0.5 and Wilcoxon signed-rank test FDR <= 0.01 (column `Gene`).
+  - `INGOR_GeneSet150.csv` — Gene Set 2, the top-150 hub genes by Maximum Clique
+    Centrality (column `name`).
+  - `1000_ECv_edges.tsv`, `1000_ECv_wilcoxon_nodes_LabelA_complete.tsv` — INGOR
+    network edges (`source, target, edgeScore, gain`) and per-gene node statistics
+    (`name`, `direction` = UP/DOWN/NS).
+  - `GO_Biological_Process_2026.txt` — Enrichr `GO_Biological_Process_2026` library
+    (GMT format), used for the over-representation analysis.
+- **Fig. 4 inputs (`fig4_predictions/`)** — predicted probability of Category 1
+  for the five Unknown chemicals at three concentrations each, for the four
+  model / gene-set combinations in the multi-modal and the transcriptomics-only
+  setting (Gene Set 1 = 182 genes, Gene Set 2 = 150 genes):
+  `ML_multimodal_GeneSet{182,150}.csv`, `ML_transcriptomics_GeneSet{182,150}.csv`
+  (LR / SVM / RF probabilities; the ML value plotted is their mean) and
+  `NN_multimodal_GeneSet{182,150}.csv`, `NN_transcriptomics_GeneSet{182,150}.csv`
+  (neural-network output: `Category` = predicted probability followed by the input
+  features; rows are ordered Deltamethrin, BDE-99, Bisphenol A, Chlorpyrifos,
+  Imidacloprid, three concentrations each).
 
 ## Scripts
 
@@ -126,11 +145,8 @@ Dot plots (replacing bar charts) of chemical-category predictions from 4
 model/gene-set combinations, each shown for both a multi-modal and a
 transcriptomics-only feature set (8 panels total).
 
-- Inputs: see the expected `--input-dir` layout documented in the script's
-  module docstring (`LabelA/GeneSet182/Final_prediction.csv`,
-  `ML_analysis/LabelA/GeneSet182/Final_prediction/predictions.csv`,
-  `NN_Final_182.csv`, `NN_Final_182_transcriptomics.csv`, etc., and their
-  GeneSet150 counterparts).
+- Inputs: the 8 files in `data/fig4_predictions/` (see Data above and the
+  script's module docstring).
 - Run: `python scripts/Fig4a-h_prediction_dotplots.py`
 - Outputs: 8 dot-plot PNG/TIFF pairs under `output/figures_dotplot/`.
 

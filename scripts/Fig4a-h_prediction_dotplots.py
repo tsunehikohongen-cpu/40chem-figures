@@ -11,15 +11,16 @@ Design:
   - Font: Helvetica (falls back to a metric-compatible clone / DejaVu Sans
     if unavailable on this system).
 
-Expected --input-dir layout (see README.md for column formats):
-  LabelA/GeneSet182/Final_prediction.csv
-  LabelA/GeneSet150/Final_prediction.csv
-  ML_analysis/LabelA/GeneSet182/Final_prediction/predictions.csv
-  ML_analysis/LabelA/GeneSet150/Final_prediction/predictions.csv
-  NN_Final_182.csv
-  NN_Final_150.csv
-  NN_Final_182_transcriptomics.csv   (3 rows/compound, 'Category' column)
-  NN_Final_150_transcriptomics.csv   (3 rows/compound, 'Category' column)
+Inputs (default --input-dir data/fig4_predictions; run from the repository root).
+Gene Set 1 = 182-gene Wilcoxon set, Gene Set 2 = 150-gene INGOR set:
+  ML_multimodal_GeneSet182.csv        LR/SVM/RF probabilities per compound and concentration
+  ML_multimodal_GeneSet150.csv
+  ML_transcriptomics_GeneSet182.csv   LR/SVM/RF/Ensemble probabilities (index = compound_concentration)
+  ML_transcriptomics_GeneSet150.csv
+  NN_multimodal_GeneSet182.csv        NN output: 'Category' = predicted probability, 'MW' identifies the compound
+  NN_multimodal_GeneSet150.csv
+  NN_transcriptomics_GeneSet182.csv   NN output: 'Category' = predicted probability, 3 rows/compound
+  NN_transcriptomics_GeneSet150.csv   (compound order: Deltamethrin, BDE-99, Bisphenol A, Chlorpyrifos, Imidacloprid)
 """
 import argparse
 import os
@@ -126,7 +127,7 @@ def make_dotplot(rep_dict, title, stem, outdir):
 
 def parse_args():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--input-dir", default="data")
+    p.add_argument("--input-dir", default="data/fig4_predictions")
     p.add_argument("--output-dir", default="output/figures_dotplot")
     return p.parse_args()
 
@@ -138,7 +139,7 @@ def main():
     os.makedirs(outdir, exist_ok=True)
 
     print('[1/8] ML x Multi-modal x GeneSet182')
-    df = pd.read_csv(f'{base}/LabelA/GeneSet182/Final_prediction.csv')
+    df = pd.read_csv(f'{base}/ML_multimodal_GeneSet182.csv')
     df['Chemical'] = df['Chemical'].replace(DISPLAY)
     df['row_mean'] = df[['LR_prob', 'SVM_prob', 'RF_prob']].mean(axis=1)
     reps = {name: g['row_mean'].tolist() for name, g in df.groupby('Chemical')}
@@ -146,7 +147,7 @@ def main():
                  'ML_prediction_GS182_multimodal', outdir)
 
     print('[2/8] ML x Multi-modal x GeneSet150')
-    df = pd.read_csv(f'{base}/LabelA/GeneSet150/Final_prediction.csv')
+    df = pd.read_csv(f'{base}/ML_multimodal_GeneSet150.csv')
     df['Chemical'] = df['Chemical'].replace(DISPLAY)
     df['row_mean'] = df[['LR_prob', 'SVM_prob', 'RF_prob']].mean(axis=1)
     reps = {name: g['row_mean'].tolist() for name, g in df.groupby('Chemical')}
@@ -154,21 +155,21 @@ def main():
                  'ML_prediction_GS150_multimodal', outdir)
 
     print('[3/8] ML x Transcriptomics x GeneSet182')
-    df = pd.read_csv(f'{base}/ML_analysis/LabelA/GeneSet182/Final_prediction/predictions.csv', index_col=0)
+    df = pd.read_csv(f'{base}/ML_transcriptomics_GeneSet182.csv', index_col=0)
     df['Chemical'] = df['Chemical'].replace(DISPLAY)
     reps = {name: g['Ensemble'].tolist() for name, g in df.groupby('Chemical')}
     make_dotplot(reps, 'Unknown Chemical Prediction\nLabel A - GeneSet182 (Transcriptomics-based)',
                  'ML_prediction_GS182_transcriptomics', outdir)
 
     print('[4/8] ML x Transcriptomics x GeneSet150')
-    df = pd.read_csv(f'{base}/ML_analysis/LabelA/GeneSet150/Final_prediction/predictions.csv', index_col=0)
+    df = pd.read_csv(f'{base}/ML_transcriptomics_GeneSet150.csv', index_col=0)
     df['Chemical'] = df['Chemical'].replace(DISPLAY)
     reps = {name: g['Ensemble'].tolist() for name, g in df.groupby('Chemical')}
     make_dotplot(reps, 'Unknown Chemical Prediction\nLabel A - GeneSet150 (Transcriptomics-based)',
                  'ML_prediction_GS150_transcriptomics', outdir)
 
     print('[5/8] NN x Multi-modal x GeneSet182')
-    df = pd.read_csv(f'{base}/NN_Final_182.csv')
+    df = pd.read_csv(f'{base}/NN_multimodal_GeneSet182.csv')
     df['compound'] = df['MW'].round(2).map(MW_MAP)
     prob_col = df.columns[0]
     reps = {name: g[prob_col].tolist() for name, g in df.groupby('compound')}
@@ -176,7 +177,7 @@ def main():
                  'NN_prediction_GS182_multimodal', outdir)
 
     print('[6/8] NN x Multi-modal x GeneSet150')
-    df = pd.read_csv(f'{base}/NN_Final_150.csv')
+    df = pd.read_csv(f'{base}/NN_multimodal_GeneSet150.csv')
     df['compound'] = df['MW'].round(2).map(MW_MAP)
     prob_col = df.columns[0]
     reps = {name: g[prob_col].tolist() for name, g in df.groupby('compound')}
@@ -184,14 +185,14 @@ def main():
                  'NN_prediction_GS150_multimodal', outdir)
 
     print('[7/8] NN x Transcriptomics x GeneSet182')
-    df = pd.read_csv(f'{base}/NN_Final_182_transcriptomics.csv')
+    df = pd.read_csv(f'{base}/NN_transcriptomics_GeneSet182.csv')
     df['compound'] = LABELS
     reps = {name: g['Category'].tolist() for name, g in df.groupby('compound')}
     make_dotplot(reps, 'Unknown Chemical Prediction\nLabel A - GeneSet182 (Transcriptomics-based)',
                  'NN_prediction_GS182_transcriptomics', outdir)
 
     print('[8/8] NN x Transcriptomics x GeneSet150')
-    df = pd.read_csv(f'{base}/NN_Final_150_transcriptomics.csv')
+    df = pd.read_csv(f'{base}/NN_transcriptomics_GeneSet150.csv')
     df['compound'] = LABELS
     reps = {name: g['Category'].tolist() for name, g in df.groupby('compound')}
     make_dotplot(reps, 'Unknown Chemical Prediction\nLabel A - GeneSet150 (Transcriptomics-based)',
