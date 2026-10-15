@@ -98,7 +98,7 @@ def make_dotplot(rep_dict, title, stem, outdir):
     ax.set_yticks(range(len(order)))
     ax.set_yticklabels(order)
     ax.invert_yaxis()
-    ax.set_xlabel('Prob (Category = 1)', fontweight='normal')
+    ax.set_xlabel('Category 1-likeness score' if stem.startswith('NN') else 'Prob (Category = 1)', fontweight='normal')
 
     for spine in ax.spines.values():
         spine.set_linewidth(0.8)

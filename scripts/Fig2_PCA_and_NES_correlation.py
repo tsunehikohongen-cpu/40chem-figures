@@ -163,7 +163,7 @@ def panel_b_violin(ax, nes_csv):
     ax.set_xticklabels([f'Within-category\n(n={len(within)})',
                         f'Between-category\n(n={len(between)})'], fontsize=13)
     ax.set_ylabel('Pairwise NES-profile correlation r', fontsize=14)
-    ax.set_title(f'b  Δmean = {dmean:+.3f}  |  MWU p = {p:.3f}',
+    ax.set_title(f'b  Δmean = {dmean:+.3f}  |  MWU P = {p:.4f}',
                  fontsize=14, loc='left', pad=10)
 
 
