@@ -147,9 +147,16 @@ def panel_b_violin(ax, nes_csv):
     within = np.asarray(within); between = np.asarray(between)
     dmean = within.mean() - between.mean()
     _, p = mannwhitneyu(within, between, alternative='two-sided')
+    # chemical-level permutation test: category labels shuffled among the 35 chemicals (pairs share chemicals and are not independent)
+    iu = np.triu_indices(len(lab_idx), 1); r = corr[iu]; lab = np.array([1 if c == 'Cat1' else 0 for c in lab_cat])
+    def _dm(l):
+        w = l[iu[0]] == l[iu[1]]; return r[w].mean() - r[~w].mean()
+    rng = np.random.default_rng(42); N_PERM = 100000
+    perm = np.array([_dm(rng.permutation(lab)) for _ in range(N_PERM)])
+    p_perm = (1 + (np.abs(perm) >= abs(dmean)).sum()) / (N_PERM + 1)
     print(f'Panel b: within n={len(within)} mean={within.mean():.3f} | '
           f'between n={len(between)} mean={between.mean():.3f} | '
-          f'Δmean={dmean:+.3f}  MWU p={p:.4f}')
+          f'Δmean={dmean:+.3f}  MWU p={p:.4f} | chemical-level permutation P={p_perm:.4f}')
 
     parts = ax.violinplot([within, between], positions=[0, 1],
                           showmeans=False, showextrema=False, widths=0.80)
@@ -163,7 +170,7 @@ def panel_b_violin(ax, nes_csv):
     ax.set_xticklabels([f'Within-category\n(n={len(within)})',
                         f'Between-category\n(n={len(between)})'], fontsize=13)
     ax.set_ylabel('Pairwise NES-profile correlation r', fontsize=14)
-    ax.set_title(f'b  Δmean = {dmean:+.3f}  |  MWU P = {p:.4f}',
+    ax.set_title(f'b  Δmean = {dmean:+.3f}  |  permutation $\\mathit{{P}}$ = {p_perm:.3f}',
                  fontsize=14, loc='left', pad=10)
 
 
