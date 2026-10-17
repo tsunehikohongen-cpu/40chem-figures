@@ -191,12 +191,18 @@ BBB_score, Brenk_alerts, PAINS_alerts) in the CACTUS files: ML 11.2% (GeneSet182
 19.0% (GeneSet150); NN 5.6% (GeneSet182) and 5.4% (GeneSet150). The NonCACTUS files
 contain no descriptors.
 
-`run_shap_contribution_export.py` cannot be run standalone: it consumes a pre-built
-`setup_all.pkl` (fitted LR / RF / SVM models and scaled feature matrix per combination)
-from the original model-training pipeline (archived in
-[40chem-supplement](https://github.com/tsunehikohongen-cpu/40chem-supplement)`/scripts/ml_pipeline/`).
-It is included to document exactly how the ML contribution percentages were computed
-(see its module docstring).
+Reproducing the ML contributions (needs a clone of
+[40chem-supplement](https://github.com/tsunehikohongen-cpu/40chem-supplement) next to this repository):
+
+```bash
+python scripts/build_setup_all_pkl.py --supplement ../40chem-supplement --out setup_all.pkl
+python scripts/run_shap_contribution_export.py --setup-pkl setup_all.pkl --time-budget 120   # repeat until "ALL COMPLETE"
+```
+
+`build_setup_all_pkl.py` fits LR / SVM / RF on the 105-sample final training matrices stored in the supplement repository.
+The regenerated tables agree with the shipped ones to within about 0.7 percentage points per feature (SHAP sampling and random
+forest are stochastic) and give the same modality attribution (descriptors 11.8 % / 19.5 % for Gene Set 1 / 2 versus 11.8 % /
+19.3 % shipped). The neural-network tables were produced with Multi-Sigma and are provided as results only.
 
 ## License
 
